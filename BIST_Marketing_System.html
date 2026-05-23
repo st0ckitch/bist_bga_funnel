@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BIST Marketing System</title>
+<style>
+:root{
+--bg1:#ffffff;--bg2:#f7f7f5;--bg3:#f0efec;
+--t1:#1a1a1a;--t2:#6b6b6b;--t3:#999999;
+--b1:rgba(0,0,0,0.4);--b2:rgba(0,0,0,0.2);--b3:rgba(0,0,0,0.1);
+--font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+--radius:8px;--radius-lg:12px;
+}
+@media(prefers-color-scheme:dark){
+:root{
+--bg1:#1e1e1e;--bg2:#2a2a2a;--bg3:#333333;
+--t1:#e8e8e8;--t2:#a0a0a0;--t3:#707070;
+--b1:rgba(255,255,255,0.3);--b2:rgba(255,255,255,0.15);--b3:rgba(255,255,255,0.08);
+}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg3);color:var(--t1);line-height:1.5;-webkit-font-smoothing:antialiased}
+.page{max-width:760px;margin:0 auto;padding:24px 20px;background:var(--bg1);min-height:100vh}
+h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.subtitle{font-size:14px;color:var(--t2);margin-bottom:24px}
+.tabs{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg1);padding:8px 0;z-index:10}
+.tab{padding:9px 18px;border-radius:var(--radius);border:1px solid var(--b3);background:transparent;color:var(--t2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font)}
+.tab:hover{border-color:var(--b2);color:var(--t1)}
+.tab.on{background:#1B2A4A;color:#fff;border-color:#1B2A4A}
+.pane{display:none}.pane.on{display:block}
+
+.stg{display:flex;gap:16px;align-items:stretch;margin-bottom:2px}
+.trap-col{flex-shrink:0;display:flex;flex-direction:column;align-items:center}
+.info-col{flex:1;min-width:0}
+.sn{font-size:18px;font-weight:600;color:var(--t1);margin-bottom:4px}
+.sd{font-size:13px;color:var(--t2);line-height:1.55;margin-bottom:8px}
+.ch-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.ch{font-size:10px;padding:3px 10px;border-radius:14px;font-weight:600;white-space:nowrap}
+.ch-p{background:#E6F1FB;color:#0C447C}
+.ch-o{background:#E1F5EE;color:#085041}
+.ch-e{background:#FAEEDA;color:#633806}
+.ch-c{background:#EEEDFE;color:#3C3489}
+.ch-r{background:#FBEAF0;color:#72243E}
+.act-box{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:4px}
+.act-title{font-size:12px;font-weight:600;color:var(--t1);margin-bottom:4px}
+.act-list{font-size:12px;color:var(--t2);line-height:1.65}
+.conv-row{display:flex;align-items:center;gap:8px;margin:4px 0 4px 30px}
+.conv-dash{width:0;height:14px;border-left:1.5px dashed var(--b2)}
+.conv-pill{font-size:11px;font-weight:600;color:#0F6E56;background:#E1F5EE;padding:3px 12px;border-radius:20px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px;padding:12px 16px;background:var(--bg2);border-radius:var(--radius)}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)}
+.leg-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+.crm-step{display:flex;gap:14px;align-items:flex-start;margin-bottom:6px}
+.crm-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.crm-content{flex:1;padding:12px 16px;border-radius:var(--radius);border:1px solid var(--b3)}
+.crm-h{font-size:14px;font-weight:600;color:var(--t1);margin-bottom:3px}
+.crm-p{font-size:12px;color:var(--t2);line-height:1.55}
+.crm-arrow{display:flex;justify-content:center;margin:2px 0 2px 12px}
+.crm-arr-line{width:0;height:16px;border-left:1.5px solid var(--b2)}
+
+.ret-card{padding:16px 20px;border-radius:var(--radius-lg);border:1px solid var(--b3);margin-bottom:12px}
+.ret-h{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:6px}
+.ret-p{font-size:13px;color:var(--t2);line-height:1.6}
+.ret-tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:12px;margin-right:4px;margin-top:8px}
+
+.road-wrap{position:relative;width:100%;overflow:visible}
+.road-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.cp{position:absolute;width:275px}
+.cp-pin{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;position:absolute;z-index:2}
+.cp-card{margin-left:48px;padding:14px 16px;border-radius:var(--radius-lg);border:1px solid var(--b3);background:var(--bg1);position:relative;z-index:1;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+.cp-card::before{content:'';position:absolute;left:-9px;top:15px;width:9px;height:1.5px;background:var(--b2)}
+.cp-phase{font-size:10px;font-weight:700;letter-spacing:0.7px;text-transform:uppercase;margin-bottom:2px}
+.cp-title{font-size:15px;font-weight:600;color:var(--t1);margin-bottom:4px}
+.cp-mind{font-size:11.5px;color:var(--t2);line-height:1.45;margin-bottom:8px;font-style:italic}
+.cp-sec{margin-bottom:7px}
+.cp-sl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.cp-st{font-size:11.5px;color:var(--t2);line-height:1.5}
+.cp-div{height:1px;background:var(--b3);margin:7px 0}
+.mile{position:absolute;font-size:10px;font-weight:600;color:var(--t3);background:var(--bg1);padding:3px 10px;border-radius:12px;border:1px solid var(--b3);white-space:nowrap;z-index:2}
+.intro{font-size:13px;color:var(--t2);margin-bottom:16px;line-height:1.6}
+
+@media(prefers-color-scheme:dark){
+.tab.on{background:#C8A951;color:#1B2A4A;border-color:#C8A951}
+.ch-p{background:rgba(24,95,165,0.25);color:#85B7EB}
+.ch-o{background:rgba(15,110,86,0.25);color:#5DCAA5}
+.ch-e{background:rgba(186,117,23,0.2);color:#FAC775}
+.ch-c{background:rgba(83,74,183,0.25);color:#AFA9EC}
+.ch-r{background:rgba(153,53,86,0.2);color:#ED93B1}
+.conv-pill{background:rgba(15,110,86,0.2);color:#5DCAA5}
+.cp-card{box-shadow:0 1px 4px rgba(0,0,0,0.3)}
+}
+</style>
+</head>
+<body>
+<div class="page">
+<h1>BIST Marketing & Growth System</h1>
+<div class="subtitle">British International School of Tbilisi &mdash; Strategic Marketing Framework 2026&ndash;2028</div>
+<div class="tabs" id="tabs"></div>
+<div id="panes"></div>
+</div>
+<script>
+const dk=window.matchMedia('(prefers-color-scheme:dark)').matches;
+const tabData=[{id:'funnel',label:'Marketing funnel'},{id:'crm',label:'CRM & lead flow'},{id:'cjm',label:'Customer journey map'},{id:'retention',label:'Retention & loyalty'}];
+
+const funnelColors=[
+{c:dk?'#1B2A4A':'#E8EFF7',s:dk?'#E8EFF7':'#1B2A4A'},
+{c:dk?'#2B4470':'#D5E3F2',s:dk?'#D5E3F2':'#2B4470'},
+{c:dk?'#3B6A9A':'#C0D6EA',s:dk?'#C0D6EA':'#3B6A9A'},
+{c:dk?'#7A6520':'#FDF6E3',s:dk?'#FDF6E3':'#C8A951'},
+{c:dk?'#6B5218':'#F8ECC8',s:dk?'#F8ECC8':'#B08A2A'},
+{c:dk?'#54400F':'#F0DFA5',s:dk?'#F0DFA5':'#8C6D18'}
+];
+const funnelStages=[
+{name:'Awareness',desc:'Prospective families discover BIST for the first time through paid and organic channels.',pct:100,
+chs:[{t:'Meta ads',c:'ch-p'},{t:'Google display',c:'ch-p'},{t:'YouTube pre-roll',c:'ch-p'},{t:'Organic SEO',c:'ch-o'},{t:'Social content',c:'ch-o'},{t:'PR & media',c:'ch-o'}],
+act:'Brand awareness campaigns on Facebook/Instagram targeting expat communities and affluent Georgian parents aged 25-45 in Tbilisi. Google display ads on relocation and education sites. YouTube 15-second campus highlight reels. SEO blog content targeting "international school Tbilisi," "British school Georgia." Press releases and feature articles in Georgia Today, Investor.ge. Social media content calendar: 3-4 posts/week showcasing campus, student life, achievements.',cv:'20-25% conversion'},
+{name:'Interest',desc:'Families actively engage with BIST content, explore the website, and begin comparing options.',pct:82,
+chs:[{t:'Google search ads',c:'ch-p'},{t:'Retargeting ads',c:'ch-p'},{t:'Website & blog',c:'ch-o'},{t:'Email nurture',c:'ch-c'},{t:'Virtual tour',c:'ch-o'}],
+act:'High-intent Google search ads ("A-Level school Tbilisi," "IGCSE Georgia"). Facebook/Instagram retargeting for website visitors who didn\'t enquire. Conversion-optimized landing pages with fee overview, virtual campus tour, and parent testimonials. Automated email sequences triggered by content downloads. Blog posts answering key parent questions.',cv:'3-5% conversion'},
+{name:'Enquiry',desc:'Family submits a formal enquiry, contacts admissions, or requests information directly.',pct:60,
+chs:[{t:'CRM auto-response',c:'ch-c'},{t:'WhatsApp/live chat',c:'ch-c'},{t:'Admissions email',c:'ch-c'},{t:'Phone follow-up',c:'ch-c'},{t:'Lead scoring',c:'ch-c'}],
+act:'Instant CRM auto-response within 5 minutes. Admissions team personal follow-up within 24 hours. WhatsApp/live chat on website. Lead scoring by child age, start date, source channel. Personalised information pack. Automated 48-hour reminder if no response.',cv:'55-65% conversion'},
+{name:'School visit',desc:'Family visits the Lisi Lake campus for a personal tour, meeting with admissions and teachers.',pct:44,
+chs:[{t:'Open days',c:'ch-e'},{t:'Private tours',c:'ch-e'},{t:'Taster days',c:'ch-e'},{t:'Parent ambassadors',c:'ch-r'},{t:'BIST little learners',c:'ch-e'}],
+act:'Personalised campus tours (weekdays by appointment). Termly Open Days with classroom demos and teacher Q&A. "BIST Little Learners" taster for Early Years (2-5). Trial days for older students. Parent ambassador meet-and-greets. Post-visit follow-up within 48 hours.',cv:'70-76% conversion'},
+{name:'Application',desc:'Family completes the formal application, pays the $175 assessment fee, and child is assessed.',pct:30,
+chs:[{t:'Online application',c:'ch-c'},{t:'Assessment booking',c:'ch-c'},{t:'Scholarship info',c:'ch-o'},{t:'Admissions support',c:'ch-c'}],
+act:'Streamlined online application with document upload. Admissions guides parents through requirements. Assessment within 1 week. Scholarship programme ($325K Founder\'s Grant) info shared. Personalised acceptance from Principal. Clear timeline at every step.',cv:'70-75% conversion'},
+{name:'Enrollment',desc:'Place confirmed, fees paid, student onboarded into the BIST community.',pct:18,
+chs:[{t:'Welcome pack',c:'ch-e'},{t:'Onboarding emails',c:'ch-c'},{t:'Parent portal',c:'ch-c'},{t:'Buddy programme',c:'ch-r'}],
+act:'Digital welcome pack: uniform guide, bus routes, calendar, portal access. Onboarding email sequence (week -4 to +2). Orientation day. Student buddy programme. Parent WhatsApp group. First-month check-in call. CRM retention flags from day one.',cv:null}
+];
+
+function buildFunnel(){
+const mw=160;
+let h='<div class="legend"><div class="leg-item"><div class="leg-dot" style="background:#185FA5"></div>Paid</div><div class="leg-item"><div class="leg-dot" style="background:#0F6E56"></div>Organic</div><div class="leg-item"><div class="leg-dot" style="background:#854F0B"></div>Events</div><div class="leg-item"><div class="leg-dot" style="background:#534AB7"></div>CRM</div><div class="leg-item"><div class="leg-dot" style="background:#993556"></div>Referral</div></div>';
+funnelStages.forEach((s,i)=>{
+const fc=funnelColors[i];const w1=mw*(s.pct/100);const w2=i<funnelStages.length-1?mw*(funnelStages[i+1].pct/100):w1*0.65;
+const ht=52,cx=mw/2,x1l=cx-w1/2,x1r=cx+w1/2,x2l=cx-w2/2,x2r=cx+w2/2;
+h+=`<div class="stg"><div class="trap-col"><svg width="${mw}" height="${ht}" viewBox="0 0 ${mw} ${ht}"><path d="M${x1l},0 L${x1r},0 L${x2r},${ht} L${x2l},${ht} Z" fill="${fc.c}" stroke="${fc.s}" stroke-width="1.5"/></svg></div><div class="info-col"><div class="sn">${s.name}</div><div class="sd">${s.desc}</div><div class="ch-row">${s.chs.map(c=>`<span class="ch ${c.c}">${c.t}</span>`).join('')}</div><div class="act-box"><div class="act-title">Key activities & processes</div><div class="act-list">${s.act}</div></div></div></div>`;
+if(s.cv)h+=`<div class="conv-row"><div class="conv-dash"></div><div class="conv-pill">${s.cv}</div></div>`;
+});
+return h;
+}
+
+function buildCRM(){
+const steps=[
+{n:'1',t:'Lead capture',d:'New prospect enters via: website form, Open Day registration, phone, walk-in, referral, education fair, or social DM. CRM auto-creates contact with source attribution.',bg:dk?'#0C447C':'#E6F1FB',fg:dk?'#85B7EB':'#0C447C'},
+{n:'2',t:'Auto-response & tagging',d:'Within 5 min: personalised email + digital prospectus. Auto-tags: source, child age, entry year, type. Lead score (0-100) assigned.',bg:dk?'#0C447C':'#E6F1FB',fg:dk?'#85B7EB':'#0C447C'},
+{n:'3',t:'Admissions team assignment',d:'Lead assigned to officer by year group. Personal follow-up within 24h. No answer triggers 48h and 7-day automated reminders.',bg:dk?'#085041':'#E1F5EE',fg:dk?'#5DCAA5':'#085041'},
+{n:'4',t:'Qualification & nurture',d:'Officer qualifies: timeline, budget, needs (EAL, scholarships, bus). Qualified: fast-track to visit. Not ready: monthly email nurture. All interactions tracked.',bg:dk?'#085041':'#E1F5EE',fg:dk?'#5DCAA5':'#085041'},
+{n:'5',t:'Visit scheduling & prep',d:'CRM sends confirmation + campus map + guide. Personalised tour prepared. Day-before reminder. Post-visit feedback auto-sent 2h after.',bg:dk?'#3C3489':'#EEEDFE',fg:dk?'#AFA9EC':'#3C3489'},
+{n:'6',t:'Post-visit conversion',d:'48h follow-up call. CRM flags hot leads. Application guidance email. No application in 14 days: personal check-in. Marketing retargets visited segment.',bg:dk?'#3C3489':'#EEEDFE',fg:dk?'#AFA9EC':'#3C3489'},
+{n:'7',t:'Application to enrollment',d:'CRM tracks: docs received, assessment, decision. Automated status updates. Acceptance triggers welcome sequence. Fee reminders. Status: enrolled.',bg:dk?'#633806':'#FAEEDA',fg:dk?'#FAC775':'#633806'},
+{n:'8',t:'Reporting & optimization',d:'Weekly: pipeline dashboard. Monthly: source attribution. Quarterly: cost-per-enrolment, bottleneck analysis. Budget reallocated on data.',bg:dk?'#633806':'#FAEEDA',fg:dk?'#FAC775':'#633806'}
+];
+let h='<div class="intro">Full CRM lifecycle from first contact to enrolled student. Every step is tracked, timed, and optimised.</div>';
+steps.forEach((s,i)=>{
+h+=`<div class="crm-step"><div class="crm-num" style="background:${s.bg};color:${s.fg}">${s.n}</div><div class="crm-content"><div class="crm-h">${s.t}</div><div class="crm-p">${s.d}</div></div></div>`;
+if(i<steps.length-1)h+=`<div class="crm-arrow"><div class="crm-arr-line"></div></div>`;
+});
+return h;
+}
+
+function buildCJM(container){
+const rc=dk?'rgba(255,255,255,0.07)':'rgba(0,0,0,0.05)';
+const dc=dk?'rgba(255,255,255,0.14)':'rgba(0,0,0,0.1)';
+const pins=[
+{bg:dk?'#0C447C':'#E6F1FB',fg:dk?'#85B7EB':'#0C447C'},
+{bg:dk?'#085041':'#E1F5EE',fg:dk?'#5DCAA5':'#085041'},
+{bg:dk?'#3C3489':'#EEEDFE',fg:dk?'#AFA9EC':'#3C3489'},
+{bg:dk?'#633806':'#FAEEDA',fg:dk?'#FAC775':'#633806'},
+{bg:dk?'#712B13':'#FAECE7',fg:dk?'#F5C4B3':'#712B13'},
+{bg:dk?'#72243E':'#FBEAF0',fg:dk?'#F4C0D1':'#72243E'},
+{bg:dk?'#27500A':'#EAF3DE',fg:dk?'#C0DD97':'#27500A'},
+{bg:dk?'#444441':'#F1EFE8',fg:dk?'#D3D1C7':'#444441'}
+];
+const phC=dk?['#85B7EB','#5DCAA5','#AFA9EC','#FAC775','#F5C4B3','#F4C0D1','#C0DD97','#D3D1C7']:['#0C447C','#085041','#3C3489','#854F0B','#993C1D','#993556','#3B6D11','#5F5E5A'];
+const cps=[
+{x:70,y:40,ph:'Phase 1',pc:phC[0],tt:'Trigger moment',mi:'"We\'re relocating to Tbilisi" or "Our child deserves world-class education"',
+cs:[{t:'Google search',c:'ch-o'},{t:'Meta ads',c:'ch-p'},{t:'Expat forums',c:'ch-o'},{t:'Relocation agents',c:'ch-o'}],
+tp:'Parent googles "international school Tbilisi" or sees BIST ad on Instagram. Relocation agent includes BIST in shortlist. Colleague mentions BIST.',
+oc:'First click to bist.ge. Brand enters consideration set.'},
+{x:310,y:290,ph:'Phase 2',pc:phC[1],tt:'Website discovery',mi:'"What does BIST offer? How does it compare?"',
+cs:[{t:'bist.ge',c:'ch-o'},{t:'Virtual tour',c:'ch-o'},{t:'Blog / SEO',c:'ch-o'},{t:'Retargeting',c:'ch-p'},{t:'Reviews',c:'ch-o'}],
+tp:'Browses programmes, admissions, destinations pages. Watches virtual tour. Reads comparison blog posts. Downloads prospectus. Checks Google reviews.',
+oc:'4+ min on site. 3+ pages. Prospectus download triggers nurture.'},
+{x:50,y:540,ph:'Phase 3',pc:phC[2],tt:'Active comparison',mi:'"BIST vs QSI vs European School \u2014 which fits best?"',
+cs:[{t:'Email nurture',c:'ch-c'},{t:'Retargeting',c:'ch-p'},{t:'Testimonials',c:'ch-r'},{t:'YouTube',c:'ch-p'}],
+tp:'Receives email sequence with highlights and testimonials. Sees retargeting ads with alumni stories. Watches YouTube campus showcase. Compares fees and curriculum.',
+oc:'Narrows to 2-3 schools. Ready to make contact.'},
+{x:320,y:790,ph:'Phase 4',pc:phC[3],tt:'First contact',mi:'"I want to talk to someone. Is this right for my child?"',
+cs:[{t:'Enquiry form',c:'ch-c'},{t:'WhatsApp',c:'ch-c'},{t:'Phone',c:'ch-c'},{t:'Open day signup',c:'ch-e'}],
+tp:'Submits enquiry. Auto-response in 5 min. Admissions calls within 24h. Questions answered: fees, EAL, bus, scholarships. Visit booked.',
+oc:'CRM qualified lead. Score assigned. Officer assigned.'},
+{x:40,y:1040,ph:'Phase 5',pc:phC[4],tt:'Campus experience',mi:'"Does it feel right? Will my child be happy here?"',
+cs:[{t:'Private tour',c:'ch-e'},{t:'Open day',c:'ch-e'},{t:'Taster day',c:'ch-e'},{t:'Little learners',c:'ch-e'},{t:'Ambassadors',c:'ch-r'}],
+tp:'Personalised Lisi Lake tour. Child sits in real class or Little Learners. Meets teachers, students. Talks to parent ambassador. Experiences all facilities.',
+oc:'Feedback captured. 48h follow-up. Application guidance sent.'},
+{x:310,y:1290,ph:'Phase 6',pc:phC[5],tt:'Decision & application',mi:'"We\'re ready. Let\'s make it official."',
+cs:[{t:'Application',c:'ch-c'},{t:'Assessment',c:'ch-e'},{t:'Scholarship',c:'ch-o'},{t:'Support',c:'ch-c'}],
+tp:'Online application + $175 fee. Assessment within 1 week. Scholarship eligibility ($325K pool). Acceptance letter from Principal. Fees paid.',
+oc:'CRM: enrolled. Welcome sequence triggered.'},
+{x:60,y:1540,ph:'Phase 7',pc:phC[6],tt:'Onboarding & belonging',mi:'"We made the right choice. My child is settling in."',
+cs:[{t:'Welcome pack',c:'ch-e'},{t:'Orientation',c:'ch-e'},{t:'Buddy system',c:'ch-r'},{t:'Portal',c:'ch-c'},{t:'WhatsApp',c:'ch-r'}],
+tp:'Welcome pack: uniform, bus, calendar, portal. Orientation day. Student buddy. Parent WhatsApp group. First-month check-in call.',
+oc:'Family integrated. Child has friends. Routines established.'},
+{x:300,y:1790,ph:'Phase 8',pc:phC[7],tt:'Advocacy & loyalty',mi:'"BIST is our school. We recommend it to everyone."',
+cs:[{t:'Referral programme',c:'ch-r'},{t:'Google review',c:'ch-o'},{t:'Events',c:'ch-e'},{t:'Alumni network',c:'ch-r'}],
+tp:'Leaves Google review. Joins ambassador programme. Refers families (earns credit). Attends galas, TEDx. Graduate joins alumni network.',
+oc:'Becomes a channel. Re-enrols annually. LTV: $80-120K+.'}
+];
+const totalH=2060;
+const rw=document.createElement('div');rw.className='road-wrap';rw.style.minHeight=totalH+'px';
+const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+svg.setAttribute('class','road-svg');svg.setAttribute('viewBox','0 0 680 '+totalH);svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+const pts=cps.map(c=>({x:c.x+160,y:c.y+26}));
+let p='M '+pts[0].x+' '+pts[0].y;
+for(let i=0;i<pts.length-1;i++){const p1=pts[i],p2=pts[i+1];const my=(p1.y+p2.y)/2;p+=` C ${p1.x} ${my}, ${p2.x} ${my}, ${p2.x} ${p2.y}`;}
+svg.innerHTML=`<path d="${p}" fill="none" stroke="${rc}" stroke-width="42" stroke-linecap="round"/><path d="${p}" fill="none" stroke="${dc}" stroke-width="2" stroke-dasharray="12 10" stroke-linecap="round"/>`;
+rw.appendChild(svg);
+cps.forEach((c,i)=>{
+const el=document.createElement('div');el.className='cp';el.style.left=c.x+'px';el.style.top=c.y+'px';
+const pn=pins[i];
+el.innerHTML=`<div class="cp-pin" style="background:${pn.bg};color:${pn.fg};top:2px;left:0">${i+1}</div><div class="cp-card"><div class="cp-phase" style="color:${c.pc}">${c.ph}</div><div class="cp-title">${c.tt}</div><div class="cp-mind">${c.mi}</div><div class="cp-sec"><div class="cp-sl">Channels</div><div class="ch-row">${c.cs.map(ch=>`<span class="ch ${ch.c}">${ch.t}</span>`).join('')}</div></div><div class="cp-div"></div><div class="cp-sec"><div class="cp-sl">Touchpoints</div><div class="cp-st">${c.tp}</div></div><div class="cp-div"></div><div class="cp-sec"><div class="cp-sl">Outcome</div><div class="cp-st">${c.oc}</div></div></div>`;
+rw.appendChild(el);
+});
+function addM(x,y,t){const m=document.createElement('div');m.className='mile';m.style.left=x+'px';m.style.top=y+'px';m.textContent=t;rw.appendChild(m);}
+addM(pts[0].x-30,pts[0].y-28,'\u25B6 Journey starts');
+addM(pts[7].x-30,pts[7].y+20,'\u2605 Lifetime advocate');
+[{x:pts[1].x+16,y:(pts[0].y+pts[1].y)/2,t:'20-25% interest'},
+{x:pts[2].x-50,y:(pts[1].y+pts[2].y)/2,t:'3-5% enquire'},
+{x:pts[3].x+16,y:(pts[2].y+pts[3].y)/2,t:'55-65% visit'},
+{x:pts[4].x-50,y:(pts[3].y+pts[4].y)/2,t:'70-76% apply'},
+{x:pts[5].x+16,y:(pts[4].y+pts[5].y)/2,t:'70-75% enrol'},
+{x:pts[6].x-50,y:(pts[5].y+pts[6].y)/2,t:'90%+ retention'},
+{x:pts[7].x+10,y:(pts[6].y+pts[7].y)/2,t:'NPS 65+ advocacy'}
+].forEach(m=>addM(m.x,m.y,m.t));
+container.appendChild(rw);
+}
+
+function buildRetention(){
+const cards=[
+{t:'Parent NPS & satisfaction programme',d:'Quarterly NPS surveys. CRM-tracked trends. Detractors flagged for leadership intervention within 48h. Promoters invited to ambassador programme and Google reviews.',
+tg:[{t:'NPS survey',c:'ch-c'},{t:'CRM tracking',c:'ch-c'},{t:'Alerts',c:'ch-e'}]},
+{t:'Parent ambassador & referral programme',d:'15-20 current parents as ambassadors. Attend Open Days, meet prospects. Fee credit per enrolled referral. Featured in social content and testimonials.',
+tg:[{t:'Referral tracking',c:'ch-c'},{t:'Fee credit',c:'ch-e'},{t:'Social content',c:'ch-o'}]},
+{t:'Community engagement & events',d:'Termly parent socials. Annual BIST Gala. Volunteer opportunities. TEDx Lisi Lake Youth and Research Conference as signature events. Weekly newsletter.',
+tg:[{t:'Events',c:'ch-e'},{t:'Newsletter',c:'ch-o'},{t:'Social media',c:'ch-o'}]},
+{t:'Re-enrolment & retention CRM',d:'CRM flags at-risk families: missed meetings, fee delays, declining engagement. Proactive outreach. January re-enrolment: early-bird, sibling priority, returning benefits. Exit interviews.',
+tg:[{t:'Risk scoring',c:'ch-c'},{t:'Early-bird',c:'ch-e'},{t:'Exit interviews',c:'ch-c'}]},
+{t:'Alumni network & word of mouth',d:'"Where Are They Now?" video series. Alumni career talks. Testimonials across channels. University acceptance announcements amplified. Alumni referrals as CRM source.',
+tg:[{t:'Video',c:'ch-o'},{t:'Alumni events',c:'ch-e'},{t:'Amplification',c:'ch-p'}]},
+{t:'Online reputation management',d:'Monthly Google Reviews audit. Encourage reviews post-event. Professional response to negatives within 24h. Monitor iSchoolAdvisor, forums, social. Proactive storytelling.',
+tg:[{t:'Monitoring',c:'ch-o'},{t:'Protocol',c:'ch-c'},{t:'Alerts',c:'ch-c'}]}
+];
+let h='<div class="intro">Retention is highest-ROI marketing. +5% retention outweighs +15% new leads. These programmes keep families enrolled and turn them into advocates.</div>';
+cards.forEach(c=>{h+=`<div class="ret-card"><div class="ret-h">${c.t}</div><div class="ret-p">${c.d}</div><div style="margin-top:8px">${c.tg.map(t=>`<span class="ch ${t.c} ret-tag">${t.t}</span>`).join('')}</div></div>`;});
+return h;
+}
+
+const tabsEl=document.getElementById('tabs');
+const panesEl=document.getElementById('panes');
+let built={};
+tabData.forEach((t,i)=>{
+const btn=document.createElement('button');
+btn.className='tab'+(i===0?' on':'');
+btn.textContent=t.label;
+btn.onclick=()=>{
+document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
+btn.classList.add('on');
+document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+if(!built[t.id]){
+const div=document.createElement('div');div.className='pane on';div.id='p-'+t.id;
+if(t.id==='cjm')buildCJM(div);
+else if(t.id==='funnel')div.innerHTML=buildFunnel();
+else if(t.id==='crm')div.innerHTML=buildCRM();
+else div.innerHTML=buildRetention();
+panesEl.appendChild(div);built[t.id]=true;
+}else document.getElementById('p-'+t.id).classList.add('on');
+};
+tabsEl.appendChild(btn);
+});
+const fp=document.createElement('div');fp.className='pane on';fp.id='p-funnel';fp.innerHTML=buildFunnel();panesEl.appendChild(fp);built.funnel=true;
+</script>
+</body>
+</html>
